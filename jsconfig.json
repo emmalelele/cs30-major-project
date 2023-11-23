@@ -1,6 +1,7 @@
 {
-	"compilerOptions": {
-		"target": "ESNext"
-	},
-	"include": ["*.js", "**/*.js", "node_modules/@types/p5/global.d.ts", "node_modules/p5play/p5play.d.ts"]
+  "include": [
+    "*.js",
+    "libraries/*.js",
+    "c:\\Users\\7000774\\.vscode\\extensions\\wmcicompsci.cs30-p5-1.7.0\\p5types\\global.d.ts"
+  ]
 }
