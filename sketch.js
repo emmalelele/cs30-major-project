@@ -4,6 +4,7 @@ let y2;
 let scrollSpeed = 3;
 let mainBall;
 let gems;
+let lastGemTime = 0;
 
 
 function preload(){
@@ -23,8 +24,25 @@ function setup() {
 function draw() {
   moveBackground()
   mainBall.moveTowards(mouse);
-  
+  scrollingObstacle(gems)
+  if (frameCount - lastGemTime > 5 * 60) { 
+    if (frameCount % 3 === 0) {
+      dotsObstacle();
+    } 
+    lastGemTime = frameCount; 
+  }
+  updateGem()
 }
+
+function updateGem(){
+  //update and draw the gems in gem3 group
+  if (gems) {
+    scrollingObstacle(gems)
+    }
+
+}
+  
+
 
 
 function makePlayer() {
@@ -57,5 +75,12 @@ function moveBackground() {
   }
   if (y2 >= windowHeight) {
     y2 = -500;
+  }
+}
+
+
+function scrollingObstacle(){
+  for (let i = 0; i < gemGroup.length; i++) {
+    gemGroup[i].y += scrollSpeed; 
   }
 }
