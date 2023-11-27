@@ -9,7 +9,7 @@
 - scrolling background
 - background music
 - score checker
-- have at least 7 to 8 different type of obstacles
+- have at least 7 to 8 different type of obstacles (7 or 8 different ways of arranging the obstacles)
 - game over screen, display scores.
 - display the game nicely
 

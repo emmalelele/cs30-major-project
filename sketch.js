@@ -3,7 +3,9 @@ let y1;
 let y2;
 let scrollSpeed = 3;
 let mainBall;
-let gems;
+let gems =[];
+let gem2 = [];
+let gem3 = [];
 let lastGemTime = 0;
 
 
@@ -17,8 +19,9 @@ function setup() {
   y2 = -550;
   makePlayer()
   dotsObstacle();
-
-	
+  removeOffscreenObstacles(gems);
+  removeOffscreenObstacles(gem2);
+  removeOffscreenObstacles(gem3);
 }
 
 function draw() {
@@ -27,20 +30,42 @@ function draw() {
   scrollingObstacle(gems)
   if (frameCount - lastGemTime > 5 * 60) { 
     if (frameCount % 3 === 0) {
-      dotsObstacle();
-    } 
-    lastGemTime = frameCount; 
+      makeGemSquare();
+      } 
+    else if (frameCount % 3 === 1) {
+        makeGemSquare();
+        dotsObstacle()
+      } 
+    else {
+        makeGemRect();
+      }
+      lastGemTime = frameCount; 
+    }
+    updateGem()
   }
-  updateGem()
-}
+
+
+
+
+
 
 function updateGem(){
-  //update and draw the gems in gem3 group
-  if (gems) {
-    scrollingObstacle(gems)
-    }
-
-}
+    //update and draw the gems in gem3 group
+    if (gems) {
+      scrollingObstacle(gems)
+      }
+ 
+      //update and draw the gems in gem2 group
+      if (gem2) {
+        scrollingObstacle(gem2)
+      }
+ 
+      //update and draw the gems in gems group
+      if (gem3) {
+        scrollingObstacle(gem3)
+      }
+  }
+ 
   
 
 
@@ -56,10 +81,31 @@ function dotsObstacle() {
   gems = new Group();
   gems.diameter = 10;
   gems.x = () => random(0, width);
-  gems.y = ()  => random(0, width);
+  gems.y = 0;
   gems.amount = 200;
 }
 
+function makeGemSquare() {
+  gem2 = new Group();
+  gem2.width = 50;
+  gem2.height = 10;
+  gem2.x = () => random(0, width);
+  gem2.y = 0
+  gem2.amount = 100;
+}
+
+function makeGemRect() {
+  gem3 = new Group();
+  gem3.width = 300;
+  gem3.height = 10;
+  gem3.x = width / 2;
+  gem3.y = 0
+  gem3.amount = 5;
+  while (gem3.length < 9){
+  let newGem = new gem3.Sprite();
+  newGem.y = gem3.length * 10;
+  }
+}
 
 
 
@@ -79,8 +125,17 @@ function moveBackground() {
 }
 
 
-function scrollingObstacle(){
+function scrollingObstacle(gemGroup){
   for (let i = 0; i < gemGroup.length; i++) {
     gemGroup[i].y += scrollSpeed; 
   }
 }
+
+function removeOffscreenObstacles(gemGroup) {
+  for (let i = gemGroup.length - 1; i >= 0; i--) {
+    if (gemGroup[i].y > windowHeight || gemGroup[i].x > windowWidth ) {
+      gemGroup[i].remove();
+    }
+  }
+}
+
