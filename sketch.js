@@ -7,6 +7,16 @@ let gems =[];
 let gem2 = [];
 let gem3 = [];
 let lastGemTime = 0;
+let balloon;
+
+
+// class Obstacle(){
+  
+// }
+
+
+
+
 
 
 function preload(){
@@ -18,6 +28,7 @@ function setup() {
   y1 = 50;
   y2 = -550;
   makePlayer()
+  makeBalloon()
   dotsObstacle();
   removeOffscreenObstacles(gems);
   removeOffscreenObstacles(gem2);
@@ -139,3 +150,12 @@ function removeOffscreenObstacles(gemGroup) {
   }
 }
 
+function checkCollide(balloon, obstacle){
+  if (balloon.collides(obstacle)){
+    return true;
+  }
+}
+
+function makeBalloon(){
+  balloon = new Sprite(width / 2, height / 2 + 400, 50, "grey");
+}
