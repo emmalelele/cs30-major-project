@@ -1,7 +1,23 @@
-# p5play template (edit me!)
+# Project Description
+- For this project, I will create a dupe of this game called "Rise Up"(you can download the game on your mobile phone to try). It basically challenge you to protect the balloon from random obstacles as it rise up. I will use p5play library to help with the physics in the game.
 
-This p5play-template folder contains a basic p5play project that you can run offline.
 
-Install the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) Visual Studio Code extension so you can run your project in a web browser. Click "Go Live" in the bottom right corner of Visual Studio Code to start the server.
+## Needs to have list
+- using p5play library for physics
+- start screen
+- two main sprites: the circle for player to control and the balloon
+- scrolling background
+- background music
+- score checker
+- have at least 7 to 8 different type of obstacles (7 or 8 different ways of arranging the obstacles)
+- game over screen, display scores.
+- display the game nicely
 
-If you want to keep p5play updated, install [bun](https://bun.sh/) or [npm](https://nodejs.org). Then in the file menu hover over "Terminal" and select "New Terminal". In your p5play project folder run `bun update` or `npm update` to update p5play to the latest version.
+## Nice to have list
+- local storage to keep track of player's best scores
+- let player play again when game over.
+  
+
++ [Run project](/cs30-major-project/index.html)
+
+ -- Project design by Emma Le - 2023 
