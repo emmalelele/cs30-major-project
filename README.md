@@ -18,6 +18,6 @@
 - let player play again when game over.
   
 
-+ [Run project](/cs30-major-project/index.html)
++ [Run project](/cs30-major-project/)
 
  -- Project design by Emma Le - 2023 
