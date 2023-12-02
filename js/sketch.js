@@ -6,6 +6,7 @@ let mainBall;
 let gems =[];
 let gem2 = [];
 let gem3 = [];
+let obstacleArr = [];
 let lastGemTime = 0;
 let balloon;
 
@@ -20,7 +21,7 @@ let balloon;
 
 
 function preload(){
-  theSky = loadImage("assets/sky.jpg")
+  theSky = loadImage("blue.jpg")
 }
 
 function setup() {
@@ -30,9 +31,7 @@ function setup() {
   makePlayer()
   makeBalloon()
   dotsObstacle();
-  removeOffscreenObstacles(gems);
-  removeOffscreenObstacles(gem2);
-  removeOffscreenObstacles(gem3);
+  removeOffscreenObstacles(obstacleArr);
 }
 
 function draw() {
@@ -53,6 +52,9 @@ function draw() {
       lastGemTime = frameCount; 
     }
     updateGem()
+    // if (checkCollide(balloon, mainBall)){
+    //   balloon.allowSleeping = true;
+    // }
   }
 
 
@@ -94,6 +96,7 @@ function dotsObstacle() {
   gems.x = () => random(0, width);
   gems.y = 0;
   gems.amount = 200;
+  obstacleArr.push(gems)
 }
 
 function makeGemSquare() {
@@ -103,6 +106,7 @@ function makeGemSquare() {
   gem2.x = () => random(0, width);
   gem2.y = 0
   gem2.amount = 100;
+  obstacleArr.push(gem2)
 }
 
 function makeGemRect() {
@@ -116,6 +120,7 @@ function makeGemRect() {
   let newGem = new gem3.Sprite();
   newGem.y = gem3.length * 10;
   }
+  obstacleArr.push(gem3)
 }
 
 
@@ -144,18 +149,26 @@ function scrollingObstacle(gemGroup){
 
 function removeOffscreenObstacles(gemGroup) {
   for (let i = gemGroup.length - 1; i >= 0; i--) {
-    if (gemGroup[i].y > windowHeight || gemGroup[i].x > windowWidth ) {
+    if (gemGroup[i].y < 0 || gemGroup[i].y > windowHeight || gemGroup[i].x < 0 || gemGroup[i].x > windowWidth) {
       gemGroup[i].remove();
     }
   }
 }
 
 function checkCollide(balloon, obstacle){
-  if (balloon.collides(obstacle)){
+  if (balloon.colliding(obstacle)){
     return true;
   }
 }
 
 function makeBalloon(){
-  balloon = new Sprite(width / 2, height / 2 + 400, 50, "grey");
+  balloon = createSprite(width / 2, height / 2 + 50, 50);
 }
+
+// function manageGameOver(){
+//   for (let i = 0; i < obstacleArr; i ++){
+//     if (checkCollide(balloon, obstacleArr)){
+//       balloon.sleeping = true;
+//     }
+//   }
+// }
