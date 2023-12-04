@@ -31,11 +31,15 @@ function setup() {
   makePlayer()
   makeBalloon()
   dotsObstacle();
-  removeOffscreenObstacles(obstacleArr);
+  
 }
 
 function draw() {
   moveBackground()
+  removeOffscreenObstacles(gems);
+  removeOffscreenObstacles(gem2);
+  removeOffscreenObstacles(gem3);
+
   mainBall.moveTowards(mouse);
   scrollingObstacle(gems)
   if (frameCount - lastGemTime > 5 * 60) { 
@@ -148,12 +152,24 @@ function scrollingObstacle(gemGroup){
 }
 
 function removeOffscreenObstacles(gemGroup) {
+  let obstacleToRemove = [];
   for (let i = gemGroup.length - 1; i >= 0; i--) {
-    if (gemGroup[i].y < 0 || gemGroup[i].y > windowHeight || gemGroup[i].x < 0 || gemGroup[i].x > windowWidth) {
-      gemGroup[i].remove();
+    if (gemGroup[i].position.x + gemGroup[i].width / 2 < 0 || gemGroup[i].position.x - gemGroup[i].width / 2 > width ||gemGroup[i].position.y + gemGroup[i].height / 2 < 0 ||gemGroup[i].position.y - gemGroup[i].height / 2 > height) {
+      console.log("Removing gem at index:", i);
+      //so it won't mess up the index
+      obstacleToRemove.push(i);
     }
   }
+
+  //delete after outside the first loop
+  for (let i of obstacleToRemove) {
+    gemGroup[i].remove();
+  }
 }
+
+
+
+
 
 function checkCollide(balloon, obstacle){
   if (balloon.colliding(obstacle)){
