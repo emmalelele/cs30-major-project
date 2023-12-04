@@ -6,6 +6,14 @@ let mainBall;
 let gems =[];
 let gem2 = [];
 let gem3 = [];
+let gem4;
+let floor;
+
+
+
+
+
+
 let obstacleArr = [];
 let lastGemTime = 0;
 let balloon;
@@ -30,8 +38,9 @@ function setup() {
   y2 = -550;
   makePlayer()
   makeBalloon()
-  dotsObstacle();
-  manageGameOver(balloon, gems)
+  makeScrollGem()
+  // dotsObstacle();
+
   
 }
 
@@ -42,21 +51,21 @@ function draw() {
   removeOffscreenObstacles(gem3);
 
   mainBall.moveTowards(mouse);
-  scrollingObstacle(gems)
-  if (frameCount - lastGemTime > 5 * 60) { 
-    if (frameCount % 3 === 0) {
-      makeGemSquare();
-      } 
-    else if (frameCount % 3 === 1) {
-        makeGemSquare();
-        dotsObstacle()
-      } 
-    else {
-        makeGemRect();
-      }
-      lastGemTime = frameCount; 
-    }
-    updateGem()
+  // scrollingObstacle(gems)
+  // if (frameCount - lastGemTime > 5 * 60) { 
+  //   if (frameCount % 3 === 0) {
+  //     makeGemSquare();
+  //     } 
+  //   else if (frameCount % 3 === 1) {
+  //       makeGemSquare();
+  //       dotsObstacle()
+  //     } 
+  //   else {
+  //       makeGemRect();
+  //     }
+  //     lastGemTime = frameCount; 
+  //   }
+  //   updateGem()
     // if (checkCollide(balloon, mainBall)){
     //   balloon.allowSleeping = true;
     // }
@@ -94,7 +103,7 @@ function makePlayer() {
   
 }
 
-
+// making the obstacle
 function dotsObstacle() {
   gems = new Group();
   gems.diameter = 10;
@@ -127,6 +136,16 @@ function makeGemRect() {
   }
   obstacleArr.push(gem3)
 }
+
+function makeScrollGem(){
+
+}
+
+
+
+
+
+
 
 
 
@@ -182,10 +201,10 @@ function makeBalloon(){
   balloon = createSprite(width / 2, height / 2 + 50, 50);
 }
 
-function manageGameOver(){
-  for (let i = 0; i < obstacleArr; i ++){
-     if (checkCollide(balloon, obstacleArr)){
-       balloon.allowSleeping = true;
-     }
-  }
-}
+// function manageGameOver(){
+//   for (let i = 0; i < obstacleArr; i ++){
+//      if (checkCollide(balloon, obstacleArr)){
+//        balloon.allowSleeping = true;
+//      }
+//   }
+// }
