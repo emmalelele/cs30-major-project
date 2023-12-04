@@ -21,7 +21,7 @@ let balloon;
 
 
 function preload(){
-  theSky = loadImage("blue.jpg")
+  theSky = loadImage("sky.jpg")
 }
 
 function setup() {
@@ -31,6 +31,7 @@ function setup() {
   makePlayer()
   makeBalloon()
   dotsObstacle();
+  manageGameOver(balloon, gems)
   
 }
 
@@ -181,10 +182,10 @@ function makeBalloon(){
   balloon = createSprite(width / 2, height / 2 + 50, 50);
 }
 
-// function manageGameOver(){
-//   for (let i = 0; i < obstacleArr; i ++){
-//     if (checkCollide(balloon, obstacleArr)){
-//       balloon.sleeping = true;
-//     }
-//   }
-// }
+function manageGameOver(){
+  for (let i = 0; i < obstacleArr; i ++){
+     if (checkCollide(balloon, obstacleArr)){
+       balloon.allowSleeping = true;
+     }
+  }
+}
