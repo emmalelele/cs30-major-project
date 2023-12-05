@@ -11,13 +11,6 @@ let lastGemTime = 0;
 let balloon;
 
 
-// class Obstacle(){
-  
-// }
-
-
-
-
 
 
 function preload(){
