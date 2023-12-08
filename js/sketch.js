@@ -7,10 +7,8 @@ let gems =[];
 let gem2 = [];
 let gem3 = [];
 let gem4;
+let gem5;
 let floor;
-
-
-
 
 
 
@@ -44,26 +42,34 @@ function draw() {
   removeOffscreenObstacles(gem3);
 
   mainBall.moveTowards(mouse);
-  // scrollingObstacle(gems)
-  // if (frameCount - lastGemTime > 5 * 60) { 
-  //   if (frameCount % 3 === 0) {
-  //     makeGemSquare();
-  //     } 
-  //   else if (frameCount % 3 === 1) {
-  //       makeGemSquare();
-  //       dotsObstacle()
-  //     } 
-  //   else {
-  //       makeGemRect();
-  //     }
-  //     lastGemTime = frameCount; 
-  //   }
-  //   updateGem()
-    // if (checkCollide(balloon, mainBall)){
-    //   balloon.allowSleeping = true;
-    // }
+  displayObstaclesLevel1()
+  updateGem()
+
   }
 
+
+function displayObstaclesLevel1(){
+  if (frameCount - lastGemTime > 60) { 
+    if (frameCount % 3 === 0) {
+      dotsObstacle(10, () => random(0, width), 0, 200)
+      } 
+    if (frameCount % 7 === 0) {
+        makeGemSquare(50, 10, () => random(0, width), 0, 100);
+        
+      } 
+    if (frameCount % 10 === 0){
+        makeGemRect(300, 10, width/2, 0, 5);
+      }
+
+    if (frameCount % 15 === 0){
+      dotsObstacle(70, () => random(0, width), 0, 10)
+    }
+
+    
+    
+      lastGemTime = frameCount; 
+    }
+}
 
 
 
@@ -97,32 +103,33 @@ function makePlayer() {
 }
 
 // making the obstacle
-function dotsObstacle() {
+function dotsObstacle(diameter, x, y, amount) {
   gems = new Group();
-  gems.diameter = 10;
-  gems.x = () => random(0, width);
-  gems.y = 0;
-  gems.amount = 200;
+  gems.diameter = diameter;
+  gems.x = x;
+  gems.y = y;
+  gems.amount = amount
   obstacleArr.push(gems)
 }
 
-function makeGemSquare() {
+function makeGemSquare(width, height, x, y, amount) {
   gem2 = new Group();
-  gem2.width = 50;
-  gem2.height = 10;
-  gem2.x = () => random(0, width);
-  gem2.y = 0
-  gem2.amount = 100;
+  gem2.width = width;
+  gem2.height = height;
+  gem2.x = x;
+  gem2.y = y;
+  gem2.amount = amount;
+  gem2.rotationSpeed = 1
   obstacleArr.push(gem2)
 }
 
-function makeGemRect() {
+function makeGemRect(width, height, x, y, amount) {
   gem3 = new Group();
-  gem3.width = 300;
-  gem3.height = 10;
-  gem3.x = width / 2;
-  gem3.y = 0
-  gem3.amount = 5;
+  gem3.width = width;
+  gem3.height = height;
+  gem3.x = x;
+  gem3.y = y;
+  gem3.amount = amount;
   while (gem3.length < 9){
   let newGem = new gem3.Sprite();
   newGem.y = gem3.length * 10;
@@ -131,7 +138,11 @@ function makeGemRect() {
 }
 
 function makeScrollGem(){
+  gem4 = new Sprite(40, 30, 50);
 
+  floor = new Sprite(40, 155, 80, 5, 's');
+	floor.rotation = 10;
+  floor.collider = "static"
 }
 
 
@@ -139,9 +150,16 @@ function makeScrollGem(){
 
 
 
-
-
-
+function makeTriangleGems(x1,x2,x3,y1,y2,y3){
+  gem5 = new Group();
+  gem5.x1 = x1;
+  gem5.x2 = x2;
+  gem5.x3 = x3;
+  gem5.y1 = y1;
+  gem5.y2 = y2;
+  gem5.y3 = y3;
+  gem5.amount = 100;
+}
 
 //make scrolling background
 function moveBackground() {
@@ -191,7 +209,9 @@ function checkCollide(balloon, obstacle){
 }
 
 function makeBalloon(){
-  balloon = createSprite(width / 2, height / 2 + 50, 50);
+  balloon = new Sprite(width / 2, height - 190, 50);
+  balloon.collider = 'static'
+  
 }
 
 // function manageGameOver(){
