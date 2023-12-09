@@ -6,70 +6,86 @@ let mainBall;
 let gems =[];
 let gem2 = [];
 let gem3 = [];
-let gem4;
-let gem5;
-let floor;
-
-
-
 let obstacleArr = [];
 let lastGemTime = 0;
-let balloon;
+ let balloon;
+
+
+ // class Obstacle(){
+
+ // }
 
 
 
 
-function preload(){
+
+
+ function preload(){
   theSky = loadImage("sky.jpg")
 }
-
 function setup() {
 	new Canvas(windowWidth, windowHeight);
   y1 = 50;
   y2 = -550;
   makePlayer()
   makeBalloon()
-  makeScrollGem()
-  // dotsObstacle();
-
+  dotsObstacle();
   
 }
-
 function draw() {
   moveBackground()
   removeOffscreenObstacles(gems);
   removeOffscreenObstacles(gem2);
   removeOffscreenObstacles(gem3);
-
   mainBall.moveTowards(mouse);
-  displayObstaclesLevel1()
-  updateGem()
-
+  scrollingObstacle(gems)
+  displayObstacles()
+  
   }
 
-
-function displayObstaclesLevel1(){
-  if (frameCount - lastGemTime > 60) { 
-    if (frameCount % 3 === 0) {
-      dotsObstacle(10, () => random(0, width), 0, 200)
+  function displayObstacles() {
+    if (frameCount - lastGemTime > 4 * 60) {
+      if (frameCount % 4 === 0) {
+        makeGemSquare(100, 100, () => random(0, width), 0, 4);
       } 
-    if (frameCount % 7 === 0) {
+      else if (frameCount % 4 === 1) {
         makeGemSquare(50, 10, () => random(0, width), 0, 100);
         
       } 
-    if (frameCount % 10 === 0){
-        makeGemRect(300, 10, width/2, 0, 5);
+      else if (frameCount % 4 === 2) {
+        makeGemRect(300, 10, width/2, 0, 5)
+
+      } 
+      else if (frameCount % 3 === 0) {
+        dotsObstacle(10, 10)
+      } 
+      else if (frameCount % 3 === 1) {
+        dotsObstacle(50,4)
+      } 
+      else if (frameCount % 3 === 2 ) {
+        dotsObstacle(100, () => random(0, width), 0, 5)
+      } 
+      else {
+        dotsObstacle(70, () => random(0, width), 0, 10)
       }
-
-    if (frameCount % 15 === 0){
-      dotsObstacle(70, () => random(0, width), 0, 10)
+      lastGemTime = frameCount;
     }
-
-    
-    
-      lastGemTime = frameCount; 
+    updateGem();
+    if (checkCollide(balloon, mainBall)) {
+      balloon.allowSleeping = true;
     }
-}
+  }
+  
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -93,16 +109,12 @@ function updateGem(){
   }
  
   
-
-
-
 function makePlayer() {
   noStroke();
   mainBall = new Sprite(width / 2, height / 2, 50, "lavender");
   
 }
 
-// making the obstacle
 function dotsObstacle(diameter, x, y, amount) {
   gems = new Group();
   gems.diameter = diameter;
@@ -134,31 +146,6 @@ function makeGemRect(width, height, x, y, amount) {
   let newGem = new gem3.Sprite();
   newGem.y = gem3.length * 10;
   }
-  obstacleArr.push(gem3)
-}
-
-function makeScrollGem(){
-  gem4 = new Sprite(40, 30, 50);
-
-  floor = new Sprite(40, 155, 80, 5, 's');
-	floor.rotation = 10;
-  floor.collider = "static"
-}
-
-
-
-
-
-
-function makeTriangleGems(x1,x2,x3,y1,y2,y3){
-  gem5 = new Group();
-  gem5.x1 = x1;
-  gem5.x2 = x2;
-  gem5.x3 = x3;
-  gem5.y1 = y1;
-  gem5.y2 = y2;
-  gem5.y3 = y3;
-  gem5.amount = 100;
 }
 
 //make scrolling background
@@ -174,13 +161,12 @@ function moveBackground() {
     y2 = -500;
   }
 }
-
-
-function scrollingObstacle(gemGroup){
+function scrollingObstacle(gemGroup) {
   for (let i = 0; i < gemGroup.length; i++) {
-    gemGroup[i].y += scrollSpeed; 
+    gemGroup[i].position.y += scrollSpeed;
   }
 }
+
 
 function removeOffscreenObstacles(gemGroup) {
   let obstacleToRemove = [];
@@ -191,33 +177,24 @@ function removeOffscreenObstacles(gemGroup) {
       obstacleToRemove.push(i);
     }
   }
-
   //delete after outside the first loop
   for (let i of obstacleToRemove) {
     gemGroup[i].remove();
   }
 }
-
-
-
-
-
 function checkCollide(balloon, obstacle){
   if (balloon.colliding(obstacle)){
     return true;
   }
 }
-
 function makeBalloon(){
-  balloon = new Sprite(width / 2, height - 190, 50);
+  balloon = createSprite(width / 2, height / 2 + 50, 50);
   balloon.collider = 'static'
-  
 }
-
 // function manageGameOver(){
 //   for (let i = 0; i < obstacleArr; i ++){
-//      if (checkCollide(balloon, obstacleArr)){
-//        balloon.allowSleeping = true;
-//      }
+//     if (checkCollide(balloon, obstacleArr)){
+//       balloon.sleeping = true;
+//     }
 //   }
 // }
