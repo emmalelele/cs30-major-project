@@ -69,10 +69,10 @@ function draw() {
 function displayObstacles() {
     if (frameCount - lastGemTime > 4 * 60) { //make new obstacle every 4 seconds
       if (frameCount % 3 === 0) {
-        makeGemSquare(100, 100, () => random(0, width), 0, 4);
+        makeGemSquare(100, 100, () => random(0, width), 0, random(4,8));
       } 
       else if (frameCount % 3=== 1) {
-        makeGemSquare(random(20,70), random(20,70), () => random(0, width), 0, 100);
+        makeGemSquare(random(20,70), random(10,20), () => random(0, width), 0, random(100));
 
       } 
       else if (frameCount % 3 === 2) {
@@ -139,51 +139,73 @@ function makeBalloon(){
 
 
 // circle obstacle
-function dotsObstacle(diameter, x, y, amount) {
-  gems = new Group();
-  gems.diameter = diameter;
-  gems.x = x;
-  gems.y = y;
-  gems.amount = amount
-  obstacleArr.push(gems)
-}
+// function dotsObstacle(diameter, x, y, amount) {
+//   gems = new Group();
+//   gems.diameter = diameter;
+//   gems.x = x;
+//   gems.y = y;
+//   gems.amount = amount
+//   obstacleArr.push(gems)
+// }
 
-// square obstacles
-function makeGemSquare(width, height, x, y, amount) {
-  gem2 = new Group();
-  gem2.width = width;
-  gem2.height = height;
-  gem2.x = x;
-  gem2.y = y;
-  gem2.amount = amount;
-  gem2.rotationSpeed = 10
-  obstacleArr.push(gem2)
-}
+// // square obstacles
+// function makeGemSquare(width, height, x, y, amount) {
+//   gem2 = new Group();
+//   gem2.width = width;
+//   gem2.height = height;
+//   gem2.x = x;
+//   gem2.y = y;
+//   gem2.amount = amount;
+//   gem2.rotationSpeed = 10
+//   obstacleArr.push(gem2)
+// }
 
-//rectangle obstacles
-function makeGemRect(width, height, x, y, amount) {
-  gem3 = new Group();
-  gem3.width = width;
-  gem3.height = height;
-  gem3.x = x;
-  gem3.y = y;
-  gem3.amount = amount;
-  while (gem3.length < 15){
-  let newGem = new gem3.Sprite();
-  newGem.y = gem3.length * 20;
+// //rectangle obstacles
+// function makeGemRect(width, height, x, y, amount) {
+//   gem3 = new Group();
+//   gem3.width = width;
+//   gem3.height = height;
+//   gem3.x = x;
+//   gem3.y = y;
+//   gem3.amount = amount;
+//   while (gem3.length < 15){
+//   let newGem = new gem3.Sprite();
+//   newGem.y = gem3.length * 20;
+//   }
+// }
+
+function makeGroupOfObstacles(amount, typeOfSprites) {
+  obstacleArr = new Group();
+  obstacleArr.y = 10;
+  while (obstacleArr.length < amount) {
+    let obs = new obstacleArr.Sprite();
+    if (typeOfSprites == "Squares") {
+      obs.width = width;
+      obs.height = height;
+      obs.x = x;
+      obs.y = y;
+      obs.amount = amount;
+      obs.rotationSpeed = 10
+    }
+    if (typeOfSprites == "Dots") {
+      obs.diameter = diameter;
+      obs.x = x;
+      obs.y = y;
+      obs.amount = amount
+    }
+    if (typeOfSprites == "Rectangles") {
+      obs.width = width;
+      obs.height = height;
+      obs.x = x;
+      obs.y = y;
+      obs.amount = amount;
+      while (gem3.length < 15){
+        let newGem = new gem3.Sprite();
+        newGem.y = gem3.length * 20;
+      }
+    }
   }
 }
-
-// function makeBirdObstacle(){
-//   birdObstacle = new Sprite();
-//   birdObstacle.draw = () => {
-// 		image(theBirdImage, width/2, height/2, theBirdImage.width*imageScale, theBirdImage.height*imageScale);
-// 	};
-//   birdObstacle.update= () => {
-// 		birdObstacle.moveTowards(mouse, 0.07);
-// 	};
-
-// }
 
 
 
