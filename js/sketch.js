@@ -41,11 +41,8 @@ function draw() {
   //a timer to check which kind of obstacle to display
   score ++;
   scrollingDownBackground();
-
-  //removing off-screen obstacle
-  removeOffscreenObstacles(gems);
-  removeOffscreenObstacles(gem2);
-  removeOffscreenObstacles(gem3);
+  obstacleArr.forEach(scrollingObstacle);
+  obstacleArr.forEach(removeOffscreenObstacles);
 
   //making the shield move toward mouse
   mainBall.moveTowards(mouse);
@@ -69,14 +66,14 @@ function draw() {
 function displayObstacles() {
     if (frameCount - lastGemTime > 4 * 60) { //make new obstacle every 4 seconds
       if (frameCount % 3 === 0) {
-        makeGemSquare(100, 100, () => random(0, width), 0, random(4,8));
+        makeGroupOfObstacles("Squares", 100, 100, () => random(0, width), 0, random(4,8), 0);
       } 
       else if (frameCount % 3=== 1) {
-        makeGemSquare(random(20,70), random(10,20), () => random(0, width), 0, random(100));
+        makeGroupOfObstacles("Squares", random(10,20), () => random(0, width), 0, random(100));
 
       } 
       else if (frameCount % 3 === 2) {
-        makeGemRect(600, 10, width/2, 0, 5)
+        makeGroupOfObstacles("Rectangles", 600, 10, width/2, 0, 5, 0)
 
       } 
       lastGemTime = frameCount;
@@ -87,13 +84,13 @@ function displayObstacles() {
 function displayObstacleScenario2(){
     if (frameCount - lastGemTime > 2 * 60){ // make new obstacle every 2 seconds
       if (frameCount % 3 === 0) {
-        dotsObstacle(10, 10)
+        makeGroupOfObstacles("Dots", 0, 0, () => random(0, width), 0, random(4,8), 10)
       } 
       else if (frameCount % 3 === 1) {
-        dotsObstacle(50,4)
+        makeGroupOfObstacles("Dots", 0, 0, () => random(0, width), 0, random(4,8), 50)
       } 
       else if (frameCount % 3 === 2 ) {
-        dotsObstacle(100, () => random(0, width), 0, 5)
+        makeGroupOfObstacles("Dots", 0, 0, () => random(0, width), 0, random(4,8), 100)
       } 
       lastGemTime = frameCount;
     }
@@ -174,11 +171,11 @@ function makeBalloon(){
 //   }
 // }
 
-function makeGroupOfObstacles(amount, typeOfSprites) {
-  obstacleArr = new Group();
-  obstacleArr.y = 10;
-  while (obstacleArr.length < amount) {
-    let obs = new obstacleArr.Sprite();
+function makeGroupOfObstacles(typeOfSprites, width, height, x, y, amount, diameter) {
+  groupObs = new Group();
+
+  while (groupObs.length < amount) {
+    let obs = new groupObs.Sprite();
     if (typeOfSprites == "Squares") {
       obs.width = width;
       obs.height = height;
@@ -199,12 +196,13 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       obs.x = x;
       obs.y = y;
       obs.amount = amount;
-      while (gem3.length < 15){
-        let newGem = new gem3.Sprite();
-        newGem.y = gem3.length * 20;
+      while (obs.length < 15){
+        let newGem = new obs.Sprite();
+        newGem.y = obs.length * 20;
       }
     }
   }
+  obstacleArr.push(groupObs);
 }
 
 
