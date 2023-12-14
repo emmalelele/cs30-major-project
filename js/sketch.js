@@ -5,9 +5,6 @@ let backgroundY1;
 let backgroundY2;
 let scrollSpeed = 4;
 let mainBall;
-let gems =[];
-let gem2 = [];
-let gem3 = [];
 let obstacleArr = [];
 let lastGemTime = 0;
 let balloon;
@@ -15,12 +12,31 @@ let theBirdImage;
 let birdObstacle;
 let birdGroup;
 let imageScale = 0.5
-let score = 0
+let bgMusic;
+let startGame = true;
+
+
+let arrTypeOfObstacles = [
+  {shape:"Squares", rotate:"slow"},
+  {shape:"Squares", rotate:"fast"}, //rotate fast
+  {shape:"Dots", arrange:"random"}, //appear random
+  {shape:"Dots", arrange:"center"}, //appear centre of the screen
+  {shape:"Rectangles", arrange:"vertical"}, //arrange vertically
+  {shape:"Rectangles", arrange:"horizontal"} // arrange horizontally
+  
+];
+
+//function to pick up random obstacle from the array
+function randomItemFromArray(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 
 
 //loading images
 function preload(){
   theSky = loadImage("sky.jpg")
+  bgMusic = loadSound("sound.mp3")
 
 }
 
@@ -31,97 +47,51 @@ function setup() {
   backgroundY2 = height;
   makePlayer()
   makeBalloon()
-
-
-
+  
+  
 }
 
 //draw 
 function draw() {
-  //a timer to check which kind of obstacle to display
-  score ++;
+
   scrollingDownBackground();
-  obstacleArr.forEach(scrollingObstacle);
+  obstacleArr.forEach(scrollingObstacle); //update position of the obstacles
   obstacleArr.forEach(removeOffscreenObstacles);
 
   //making the shield move toward mouse
   mainBall.moveTowards(mouse);
-
-  //update the position of the obstacles
-  updateGem()
-
-  console.log(score)
+  //display
+  displayObstacle()
+}
 
 
-//displaying different scenario
-  if (score < 1000){
-    displayObstacles();
-  }
-  else if (score > 1000){
-    displayObstacleScenario2()
+
+
+function displayObstacle(){
+  if (frameCount % 299 == 0) {
+    if (frameCount % 5 == 0) {
+      makeGroupOfObstacles(5, "Rectangles");
+    } 
+    else {
+      //Random create "Squares", "Rectangles", "Dots", "Pigs"
+      makeGroupOfObstacles(random(20,50), randomItemFromArray(arrTypeOfObstacles));
+    }
   }
 }
 
-// scenario 1
-function displayObstacles() {
-    if (frameCount - lastGemTime > 4 * 60) { //make new obstacle every 4 seconds
-      if (frameCount % 3 === 0) {
-        makeGroupOfObstacles("Squares", 100, 100, () => random(0, width), 0, random(4,8), 0);
-      } 
-      else if (frameCount % 3=== 1) {
-        makeGroupOfObstacles("Squares", random(10,20), () => random(0, width), 0, random(100));
-
-      } 
-      else if (frameCount % 3 === 2) {
-        makeGroupOfObstacles("Rectangles", 600, 10, width/2, 0, 5, 0)
-
-      } 
-      lastGemTime = frameCount;
-    } 
-  }
-
-//scenario 2
-function displayObstacleScenario2(){
-    if (frameCount - lastGemTime > 2 * 60){ // make new obstacle every 2 seconds
-      if (frameCount % 3 === 0) {
-        makeGroupOfObstacles("Dots", 0, 0, () => random(0, width), 0, random(4,8), 10)
-      } 
-      else if (frameCount % 3 === 1) {
-        makeGroupOfObstacles("Dots", 0, 0, () => random(0, width), 0, random(4,8), 50)
-      } 
-      else if (frameCount % 3 === 2 ) {
-        makeGroupOfObstacles("Dots", 0, 0, () => random(0, width), 0, random(4,8), 100)
-      } 
-      lastGemTime = frameCount;
-    }
-
-  }
 
 
-// function to update position of the obstacles
-function updateGem(){
-    //update and draw the gems in gem3 group
-    if (gems) {
-      scrollingObstacle(gems)
-      }
- 
-      //update and draw the gems in gem2 group
-      if (gem2) {
-        scrollingObstacle(gem2)
-      }
- 
-      //update and draw the gems in gems group
-      if (gem3) {
-        scrollingObstacle(gem3)
-      }
-  }
 
+function mousePressed(){
+  bgMusic.play()
+}
 
 
 //making the shield
 function makePlayer() {
   noStroke();
-  mainBall = new Sprite(width / 2, height / 2, 50, "lavender");
+  mainBall = new Sprite(width / 2, height / 2, 50);
+  fill("grey")
 
 }
 
@@ -134,7 +104,6 @@ function makeBalloon(){
 
 ////////////////////////////////////////-----------------------------------------------/////////////////////////////////////////////
 
-
 // circle obstacle
 // function dotsObstacle(diameter, x, y, amount) {
 //   gems = new Group();
@@ -144,7 +113,6 @@ function makeBalloon(){
 //   gems.amount = amount
 //   obstacleArr.push(gems)
 // }
-
 // // square obstacles
 // function makeGemSquare(width, height, x, y, amount) {
 //   gem2 = new Group();
@@ -156,7 +124,6 @@ function makeBalloon(){
 //   gem2.rotationSpeed = 10
 //   obstacleArr.push(gem2)
 // }
-
 // //rectangle obstacles
 // function makeGemRect(width, height, x, y, amount) {
 //   gem3 = new Group();
@@ -171,39 +138,58 @@ function makeBalloon(){
 //   }
 // }
 
-function makeGroupOfObstacles(typeOfSprites, width, height, x, y, amount, diameter) {
+function makeGroupOfObstacles(amount, typeOfSprites) {
   groupObs = new Group();
-
+  groupObs.y = 0;
   while (groupObs.length < amount) {
     let obs = new groupObs.Sprite();
-    if (typeOfSprites == "Squares") {
-      obs.width = width;
-      obs.height = height;
-      obs.x = x;
-      obs.y = y;
-      obs.amount = amount;
-      obs.rotationSpeed = 10
+    if (typeOfSprites.shape == "Squares") {
+      obs.width = random(20, 80);
+      obs.height = obs.width;
+      if (typeOfSprites.rotate == "slow"){
+        obs.rotationSpeed = 1;
+      }
+      else{
+        obs.rotationSpeed = 30;
+      }
+      obs.x = random(0, width);
     }
-    if (typeOfSprites == "Dots") {
-      obs.diameter = diameter;
-      obs.x = x;
-      obs.y = y;
-      obs.amount = amount
+    if (typeOfSprites.shape == "Dots") {
+      obs.diameter = random(20, 80);
+      if (typeOfSprites.arrange == "random"){
+        obs.x = random(0, width);
+        obs.direction = random(0, 180);
+        obs.speed = 3;
+      }
+      else{
+        obs.x = random(width/2-40,width/2+40);
+        obs.y = random(0, -40);
+        obs.rotationSpeed = 0;
+      }
+      
     }
-    if (typeOfSprites == "Rectangles") {
-      obs.width = width;
-      obs.height = height;
-      obs.x = x;
-      obs.y = y;
-      obs.amount = amount;
-      while (obs.length < 15){
-        let newGem = new obs.Sprite();
-        newGem.y = obs.length * 20;
+    if (typeOfSprites.shape == "Rectangles") {
+      obs.height = random(100, 150);
+      obs.width = 30;
+      obs.y = 0
+      if (typeOfSprites.arrange == "horizontal"){
+        while (obs.length < 15){
+          let newGem = new gem3.Sprite();
+          newGem.y = obs.length * 20;
+        }
+      }
+      else{
+        while (obs.length < 15){
+          let newGem = new gem3.Sprite();
+          newGem.x = obs.length * 20;
+          }
+        }
       }
     }
+    obstacleArr.push(groupObs);
   }
-  obstacleArr.push(groupObs);
-}
+  
+
 
 
 
@@ -244,10 +230,6 @@ function removeOffscreenObstacles(gemGroup) {
       //so it won't mess up the index
       obstacleToRemove.push(i);
     }
-  }
-  //delete after outside the first loop
-  for (let i of obstacleToRemove) {
-    gemGroup[i].remove();
   }
 }
 
