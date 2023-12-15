@@ -14,6 +14,7 @@ let birdGroup;
 let imageScale = 0.5
 let bgMusic;
 let startGame = true;
+let gameOver = false;
 
 
 let arrTypeOfObstacles = [
@@ -73,7 +74,7 @@ function displayObstacle(){
       makeGroupOfObstacles(5, "Rectangles");
     } 
     else {
-      //Random create "Squares", "Rectangles", "Dots", "Pigs"
+      //random create "Squares" and "Dots"
       makeGroupOfObstacles(random(20,50), randomItemFromArray(arrTypeOfObstacles));
     }
   }
@@ -104,39 +105,6 @@ function makeBalloon(){
 
 ////////////////////////////////////////-----------------------------------------------/////////////////////////////////////////////
 
-// circle obstacle
-// function dotsObstacle(diameter, x, y, amount) {
-//   gems = new Group();
-//   gems.diameter = diameter;
-//   gems.x = x;
-//   gems.y = y;
-//   gems.amount = amount
-//   obstacleArr.push(gems)
-// }
-// // square obstacles
-// function makeGemSquare(width, height, x, y, amount) {
-//   gem2 = new Group();
-//   gem2.width = width;
-//   gem2.height = height;
-//   gem2.x = x;
-//   gem2.y = y;
-//   gem2.amount = amount;
-//   gem2.rotationSpeed = 10
-//   obstacleArr.push(gem2)
-// }
-// //rectangle obstacles
-// function makeGemRect(width, height, x, y, amount) {
-//   gem3 = new Group();
-//   gem3.width = width;
-//   gem3.height = height;
-//   gem3.x = x;
-//   gem3.y = y;
-//   gem3.amount = amount;
-//   while (gem3.length < 15){
-//   let newGem = new gem3.Sprite();
-//   newGem.y = gem3.length * 20;
-//   }
-// }
 
 function makeGroupOfObstacles(amount, typeOfSprites) {
   groupObs = new Group();
@@ -172,7 +140,7 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       obs.height = random(100, 150);
       obs.width = 30;
       obs.y = 0
-      if (typeOfSprites.arrange == "horizontal"){
+      if (typeOfSprites.arrange == "vertical"){
         while (obs.length < 15){
           let newGem = new gem3.Sprite();
           newGem.y = obs.length * 20;
@@ -220,32 +188,42 @@ function scrollingObstacle(gemGroup) {
 }
 
 // function to remove off screen obstacles
-function removeOffscreenObstacles(gemGroup) {
-  let obstacleToRemove = [];
-  for (let i = gemGroup.length - 1; i >= 0; i--) {
-    if (gemGroup[i].position.x + gemGroup[i].width / 2 < 0 || 
-       gemGroup[i].position.x - gemGroup[i].width / 2 > width ||
-       gemGroup[i].position.y + gemGroup[i].height / 2 < 0 ||
-       gemGroup[i].position.y - gemGroup[i].height / 2 > height) {
-      //so it won't mess up the index
-      obstacleToRemove.push(i);
+function removeOffscreenObstacles(groupObs, index) {
+  //delete elements from the obstacleArr
+  if (groupObs.length == 0) {
+    obstacleArr.splice(index, 1);    
+  } 
+  else {
+    // delete obstacles when it goes off screen
+    for (let i = groupObs.length - 1; i >= 0; i--) {
+      if (
+        groupObs[i].position.x + groupObs[i].width / 2 < 0 || 
+        groupObs[i].position.x - groupObs[i].width / 2 > width ||
+        groupObs[i].position.y + groupObs[i].height / 2 < 0 ||
+        groupObs[i].position.y - groupObs[i].height / 2 > height)
+
+      {
+        console.log("Removing obstacle at index:", i);
+        groupObs[i].remove();
+      }
     }
   }
 }
 
+
 //check collide
-function checkCollide(balloon, obstacle){
-  if (balloon.colliding(obstacle)){
+function checkCollision(obstacle) {
+  if (obstacle.collides(balloons)) {
+    startGame = false;
     return true;
+  } 
+  else {
+    return false;
   }
 }
 
+function manageGameOver(groupObs){
+  for (let i = groupObs.length; i >= 0; i--){
 
-
-// function manageGameOver(){
-//   for (let i = 0; i < obstacleArr; i ++){
-//     if (checkCollide(balloon, obstacleArr)){
-//       balloon.sleeping = true;
-//     }
-//   }
-// }
+  }
+}
