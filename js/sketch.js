@@ -48,7 +48,7 @@ function setup() {
   backgroundY2 = height;
   makePlayer()
   makeBalloon()
-  manageGameOver(obstacleArr)
+ 
   
 }
 
@@ -192,10 +192,15 @@ function removeOffscreenObstacles(groupObs, index) {
   //delete elements from the obstacleArr
   if (groupObs.length == 0) {
     obstacleArr.splice(index, 1);    
-  } 
+  }
   else {
     // delete obstacles when it goes off screen
     for (let i = groupObs.length - 1; i >= 0; i--) {
+      if (checkCollision(groupObs[i])) {
+        //Check collision with the balloons
+        break;
+
+      }
       if (
         groupObs[i].position.x + groupObs[i].width / 2 < 0 || 
         groupObs[i].position.x - groupObs[i].width / 2 > width ||
@@ -214,6 +219,8 @@ function removeOffscreenObstacles(groupObs, index) {
 //check collide
 function checkCollision(obstacle) {
   if (obstacle.collides(balloon)) {
+    startGame = false;
+    console.log("over")
     return true;
   } 
   else {
@@ -221,11 +228,10 @@ function checkCollision(obstacle) {
   }
 }
 
-function manageGameOver(groupObs){
-  for (let i = groupObs.length - 1; i >= 0; i--){
-    if (checkCollision(groupObs[i])){
-      startGame = false;
-      console.log("over")
-    }
-  }
-}
+// function manageGameOver(groupObs){
+//   for (let i = groupObs.length - 1; i >= 0; i--){
+//     if (checkCollision(groupObs[i])){
+//       break;
+//     }
+//   }
+// }
