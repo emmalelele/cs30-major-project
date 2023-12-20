@@ -27,6 +27,8 @@ let arrTypeOfObstacles = [
   
 ];
 
+
+
 //function to pick up random obstacle from the array
 function randomItemFromArray(array) {
   return array[Math.floor(Math.random() * array.length)];
@@ -195,7 +197,8 @@ function removeOffscreenObstacles(groupObs, index) {
   }
   else {
     // delete obstacles when it goes off screen
-    for (let i = groupObs.length - 1; i >= 0; i--) {
+    for (let i = groupObs.length - 1; i >= 0; i--) { //check collision with balloon
+      
       if (checkCollision(groupObs[i])) {
         //Check collision with the balloons
         break;
