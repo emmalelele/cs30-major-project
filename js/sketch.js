@@ -50,6 +50,19 @@ function setup() {
   backgroundY2 = height;
   makePlayer()
   makeBalloon()
+
+  //show start dialogue
+  let modalStartDialog = document.getElementById("start-dialog");
+  modalStartDialog.style.display = "block";
+
+  // \
+  document.getElementById("start-button").addEventListener("click", (e) => {
+    bgMusic.loop(); //start playing bgMusic
+    modalStartDialog.style.display = "none"; //close start dialogue
+    makeBalloon();
+    makePlayer();
+    startGame = true;
+  });
  
   
 }
@@ -159,11 +172,6 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
     obstacleArr.push(groupObs);
   }
   
-
-
-
-
-
 
 /////////////////////////////////////////////////////-------------------------------------//////////////////////////////////////////////////////////
 
