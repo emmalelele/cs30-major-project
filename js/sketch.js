@@ -48,14 +48,13 @@ function setup() {
 	new Canvas(windowWidth, windowHeight);
   backgroundY1 = 0;
   backgroundY2 = height;
-  makePlayer()
-  makeBalloon()
-
+  
+ 
   //show start dialogue
   let modalStartDialog = document.getElementById("start-dialog");
   modalStartDialog.style.display = "block";
 
-  // \
+  // start game
   document.getElementById("start-button").addEventListener("click", (e) => {
     bgMusic.loop(); //start playing bgMusic
     modalStartDialog.style.display = "none"; //close start dialogue
@@ -98,9 +97,6 @@ function displayObstacle(){
 
 
 
-function mousePressed(){
-  bgMusic.play()
-}
 
 
 //making the shield
@@ -232,6 +228,14 @@ function checkCollision(obstacle) {
   if (obstacle.collides(balloon)) {
     startGame = false;
     console.log("over")
+    const modalGameOverDialog = document.getElementById("game-over-dialog");
+    modalGameOverDialog.style.display = "block";
+    //When Play again button click
+    document
+      .getElementById("play-again-button")
+      .addEventListener("click", (e) => {
+        location.reload();
+      });
     return true;
   } 
   else {
