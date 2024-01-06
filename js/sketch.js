@@ -13,8 +13,9 @@ let birdObstacle;
 let birdGroup;
 let imageScale = 0.5
 let bgMusic;
-let startGame = true;
-let gameOver = false;
+let startGame = false;
+let gameLevel = 1
+
 
 
 let arrTypeOfObstacles = [
@@ -60,7 +61,7 @@ function setup() {
     modalStartDialog.style.display = "none"; //close start dialogue
     makeBalloon();
     makePlayer();
-    startGame = true;
+    startGame = true
   });
  
   
@@ -68,15 +69,17 @@ function setup() {
 
 //draw 
 function draw() {
-
   scrollingDownBackground();
+  if (startGame) {
+    if (frameCount < 20000) {
+      gameLevel = Math.floor(1 + frameCount / 500); //increase the gameLevel
+    }
+  }
+  mainBall.moveTowards(mouse);
+  displayObstacle()
   obstacleArr.forEach(scrollingObstacle); //update position of the obstacles
   obstacleArr.forEach(removeOffscreenObstacles);
 
-  //making the shield move toward mouse
-  mainBall.moveTowards(mouse);
-  //display
-  displayObstacle()
 }
 
 
@@ -228,6 +231,7 @@ function checkCollision(obstacle) {
   if (obstacle.collides(balloon)) {
     startGame = false;
     console.log("over")
+    //Show GameOver Dialog
     const modalGameOverDialog = document.getElementById("game-over-dialog");
     modalGameOverDialog.style.display = "block";
     //When Play again button click
