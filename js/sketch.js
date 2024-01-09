@@ -49,6 +49,9 @@ function setup() {
 	new Canvas(windowWidth, windowHeight);
   backgroundY1 = 0;
   backgroundY2 = height;
+  makeBalloon();
+  makePlayer();
+  
   
  
   //show start dialogue
@@ -59,9 +62,8 @@ function setup() {
   document.getElementById("start-button").addEventListener("click", (e) => {
     bgMusic.loop(); //start playing bgMusic
     modalStartDialog.style.display = "none"; //close start dialogue
-    makeBalloon();
-    makePlayer();
     startGame = true
+
   });
  
   
@@ -70,33 +72,38 @@ function setup() {
 //draw 
 function draw() {
   scrollingDownBackground();
-  if (startGame) {
-    if (frameCount < 20000) {
-      gameLevel = Math.floor(1 + frameCount / 500); //increase the gameLevel
-    }
-  }
   mainBall.moveTowards(mouse);
   displayObstacle()
+  displayScore()
   obstacleArr.forEach(scrollingObstacle); //update position of the obstacles
   obstacleArr.forEach(removeOffscreenObstacles);
-
+  checkCollision(balloon, mainBall)
 }
 
 
 
 
 function displayObstacle(){
-  if (frameCount % 299 == 0) {
-    if (frameCount % 5 == 0) {
-      makeGroupOfObstacles(5, "Rectangles");
-    } 
-    else {
-      //random create "Squares" and "Dots"
-      makeGroupOfObstacles(random(20,50), randomItemFromArray(arrTypeOfObstacles));
+  if (startGame){
+    if (frameCount % 299 == 0) {
+      if (frameCount % 5 == 0) {
+        makeGroupOfObstacles(5, "Rectangles");
+      } 
+      else {
+        //random create "Squares" and "Dots"
+        makeGroupOfObstacles(random(20,50), randomItemFromArray(arrTypeOfObstacles));
+      }
     }
   }
 }
 
+function displayScore(){
+  if (startGame) {
+    if (frameCount < 20000) {
+      gameLevel = Math.floor(1 + frameCount / 500); //increase the gameLevel
+    }
+  }
+}
 
 
 
@@ -247,10 +254,3 @@ function checkCollision(obstacle) {
   }
 }
 
-// function manageGameOver(groupObs){
-//   for (let i = groupObs.length - 1; i >= 0; i--){
-//     if (checkCollision(groupObs[i])){
-//       break;
-//     }
-//   }
-// }

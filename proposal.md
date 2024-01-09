@@ -4,7 +4,7 @@
 
 ## Needs to have list
 - using p5play library for physics - done
-- start screen
+- start screen - done
 - two main sprites: the circle as shield for player to control and the balloon - done 
 - scrolling background - done
 - background music - done 
