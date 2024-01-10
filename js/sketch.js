@@ -14,7 +14,7 @@ let birdGroup;
 let imageScale = 0.5
 let bgMusic;
 let startGame = false;
-let gameLevel = 1
+let gameLevel;
 
 
 
@@ -46,6 +46,8 @@ function preload(){
 
 //set up
 function setup() {
+  para1 = createElement('p', "");
+  para1.position(width/2,height/2);
 	new Canvas(windowWidth, windowHeight);
   backgroundY1 = 0;
   backgroundY2 = height;
@@ -77,7 +79,6 @@ function draw() {
   displayScore()
   obstacleArr.forEach(scrollingObstacle); //update position of the obstacles
   obstacleArr.forEach(removeOffscreenObstacles);
-  checkCollision(balloon, mainBall)
 }
 
 
@@ -87,11 +88,11 @@ function displayObstacle(){
   if (startGame){
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
-        makeGroupOfObstacles(5, "Rectangles");
+        makeGroupOfObstacles(random(5, 10), "Rectangles");
       } 
       else {
         //random create "Squares" and "Dots"
-        makeGroupOfObstacles(random(20,50), randomItemFromArray(arrTypeOfObstacles));
+        makeGroupOfObstacles(random(20,90), randomItemFromArray(arrTypeOfObstacles));
       }
     }
   }
@@ -100,13 +101,15 @@ function displayObstacle(){
 function displayScore(){
   if (startGame) {
     if (frameCount < 20000) {
-      gameLevel = Math.floor(1 + frameCount / 500); //increase the gameLevel
+      gameLevel = Math.floor(1 + frameCount / 200); //increase the gameLevel
+      para1.html("Level: " + gameLevel);
+      console.log(gameLevel)
     }
   }
+  else{
+    gameLevel = 0
+  }
 }
-
-
-
 
 
 //making the shield
@@ -253,4 +256,3 @@ function checkCollision(obstacle) {
     return false;
   }
 }
-
