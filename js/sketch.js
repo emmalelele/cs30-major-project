@@ -14,7 +14,7 @@ let birdGroup;
 let imageScale = 0.5
 let bgMusic;
 let startGame = false;
-let gameLevel;
+let gameLevel = 0;
 
 
 
@@ -65,18 +65,19 @@ function setup() {
     bgMusic.loop(); //start playing bgMusic
     modalStartDialog.style.display = "none"; //close start dialogue
     startGame = true
-
   });
  
-  
+  console.log(startGame)
 }
 
 //draw 
 function draw() {
+  if (startGame){
+    displayScore()
+    mainBall.moveTowards(mouse);
+    displayObstacle()
+  }
   scrollingDownBackground();
-  mainBall.moveTowards(mouse);
-  displayObstacle()
-  displayScore()
   obstacleArr.forEach(scrollingObstacle); //update position of the obstacles
   obstacleArr.forEach(removeOffscreenObstacles);
 }
@@ -85,7 +86,7 @@ function draw() {
 
 
 function displayObstacle(){
-  if (startGame){
+  
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
         makeGroupOfObstacles(random(5, 10), "Rectangles");
@@ -95,19 +96,17 @@ function displayObstacle(){
         makeGroupOfObstacles(random(20,90), randomItemFromArray(arrTypeOfObstacles));
       }
     }
-  }
+  
 }
+
 
 function displayScore(){
   if (startGame) {
     if (frameCount < 20000) {
-      gameLevel = Math.floor(1 + frameCount / 200); //increase the gameLevel
-      para1.html("Level: " + gameLevel);
+      gameLevel = Math.floor(1 + frameCount / 100); //increase the gameLevel
+      para1.html("Score: " + gameLevel);
       console.log(gameLevel)
     }
-  }
-  else{
-    gameLevel = 0
   }
 }
 
