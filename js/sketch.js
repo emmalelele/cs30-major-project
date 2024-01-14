@@ -15,6 +15,7 @@ let imageScale = 0.5
 let bgMusic;
 let startGame = false;
 let gameLevel = 0;
+let startFrame
 
 
 
@@ -86,7 +87,6 @@ function draw() {
 
 
 function displayObstacle(){
-  
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
         makeGroupOfObstacles(random(5, 10), "Rectangles");
@@ -101,12 +101,13 @@ function displayObstacle(){
 
 
 function displayScore(){
-  if (startGame) {
-    if (frameCount < 20000) {
-      gameLevel = Math.floor(1 + frameCount / 100); //increase the gameLevel
-      para1.html("Score: " + gameLevel);
-      console.log(gameLevel)
-    }
+  if (!startFrame){
+    startFrame = frameCount;
+  }
+  if (frameCount < 20000) {
+    gameLevel = Math.floor(1 + (frameCount - startFrame) / 100); //increase the gameLevel
+    para1.html("Score: " + gameLevel);
+    console.log(gameLevel)
   }
 }
 
