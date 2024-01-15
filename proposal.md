@@ -8,7 +8,7 @@
 - two main sprites: the circle as shield for player to control and the balloon - done 
 - scrolling background - done
 - background music - done 
-- score checker
+- score checker - done
 - have at least 7 to 8 different type of obstacles (7 or 8 different ways of arranging the obstacles) - done
 - game over screen, display scores.
 

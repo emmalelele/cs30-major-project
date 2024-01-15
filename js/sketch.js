@@ -25,8 +25,9 @@ let arrTypeOfObstacles = [
   {shape:"Dots", arrange:"random"}, //appear random
   {shape:"Dots", arrange:"center"}, //appear centre of the screen
   {shape:"Rectangles", arrange:"vertical"}, //arrange vertically
-  {shape:"Rectangles", arrange:"horizontal"} // arrange horizontally
-  
+  {shape:"Rectangles", arrange:"horizontal"}, // arrange horizontally
+  {shape:"Pigs",direction:"down"},
+  {shape:"Pigs",direction:"balloon"},
 ];
 
 
@@ -89,7 +90,7 @@ function draw() {
 function displayObstacle(){
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
-        makeGroupOfObstacles(random(5, 10), "Rectangles");
+        makeGroupOfObstacles(random(5, 10), "Pigs");
       } 
       else {
         //random create "Squares" and "Dots"
@@ -114,16 +115,17 @@ function displayScore(){
 
 //making the shield
 function makePlayer() {
-  noStroke();
+  noStroke()
   mainBall = new Sprite(width / 2, height / 2, 50);
-  fill("grey")
+  mainBall.color = "grey"
 
 }
 
 //make the balloon
 function makeBalloon(){
-  balloon = createSprite(width / 2, height / 2 + 50, 50);
+  balloon = createSprite(width / 2, height/2 + 200, 50);
   balloon.collider = 'static'
+  balloon.color = "grey"
 }
 
 
@@ -177,6 +179,21 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
           }
         }
       }
+    if (typeOfSprites.shape == "Pigs") {
+      obs.scale = random(0.3, 1.1);
+      obs.y = random(0, -40);
+      obs.img = "pig.png";
+      if (typeOfSprites.direction == "balloon"){
+        obs.x  = (groupObs.length-1)*(width/amount);
+        obs.moveTowards(balloon, 0.3);
+        obs.speed = obs.scale;
+      }
+      else{
+        obs.x = random(0, width);
+        obs.direction = "down";
+        obs.speed = 0.01;
+      }
+    }
     }
     obstacleArr.push(groupObs);
   }
@@ -240,6 +257,7 @@ function removeOffscreenObstacles(groupObs, index) {
 function checkCollision(obstacle) {
   if (obstacle.collides(balloon)) {
     startGame = false;
+    balloon.img = "boom.png";
     console.log("over")
     //Show GameOver Dialog
     const modalGameOverDialog = document.getElementById("game-over-dialog");
