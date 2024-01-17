@@ -8,9 +8,6 @@ let mainBall;
 let obstacleArr = [];
 let lastGemTime = 0;
 let balloon;
-let theBirdImage;
-let birdObstacle;
-let birdGroup;
 let imageScale = 0.5
 let bgMusic;
 let startGame = false;
@@ -26,8 +23,8 @@ let arrTypeOfObstacles = [
   {shape:"Dots", arrange:"center"}, //appear centre of the screen
   {shape:"Rectangles", arrange:"vertical"}, //arrange vertically
   {shape:"Rectangles", arrange:"horizontal"}, // arrange horizontally
-  {shape:"Pigs",direction:"down"},
-  {shape:"Pigs",direction:"balloon"},
+  {shape:"Pigs",direction:"down"}, //move down like normal
+  {shape:"Pigs",direction:"balloon"} // move toward the balloon
 ];
 
 
@@ -125,7 +122,9 @@ function makePlayer() {
 function makeBalloon(){
   balloon = createSprite(width / 2, height/2 + 200, 50);
   balloon.collider = 'static'
-  balloon.color = "grey"
+  balloon.color = "white"
+
+ 
 }
 
 
@@ -163,22 +162,24 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       
     }
     if (typeOfSprites.shape == "Rectangles") {
-      obs.height = random(100, 150);
-      obs.width = 30;
-      obs.y = 0
       if (typeOfSprites.arrange == "vertical"){
-        while (obs.length < 15){
-          let newGem = new gem3.Sprite();
-          newGem.y = obs.length * 20;
-        }
+        obs.width = random(100, 150);
+        obs.height = 30;
+        obs.x = width/2;
+        obs.y = 0-groupObs.length*30;
+        obs.rotate = 0;
       }
       else{
-        while (obs.length < 15){
-          let newGem = new gem3.Sprite();
-          newGem.x = obs.length * 20;
-          }
-        }
+        obs.height = random(100, 150);
+        obs.width = 30;
+        obs.x  = (groupObs.length-1)*(width/amount);
+        obs.y = 0;
+        obs.rotateTowards(mouse, 0.05, 0);
+        obs.speed = 0.05;
       }
+    }
+
+
     if (typeOfSprites.shape == "Pigs") {
       obs.scale = random(0.3, 1.1);
       obs.y = random(0, -40);
@@ -261,6 +262,7 @@ function checkCollision(obstacle) {
     console.log("over")
     //Show GameOver Dialog
     const modalGameOverDialog = document.getElementById("game-over-dialog");
+    document.getElementById("game-level-display").textContent = gameLevel;
     modalGameOverDialog.style.display = "block";
     //When Play again button click
     document
