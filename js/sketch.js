@@ -14,19 +14,22 @@ let startGame = false;
 let gameLevel = 0;
 let startFrame
 let bestScore;
+let theString;
+let theBall
 
 
 
 let arrTypeOfObstacles = [
   {shape:"Squares", rotate:"slow"},
   {shape:"Squares", rotate:"fast"}, //rotate fast
+  {shape:"Squares", arrange:"toward"}, // move toward balloon
   {shape:"Dots", arrange:"random"}, //appear random
   {shape:"Dots", arrange:"center"}, //appear centre of the screen
   {shape:"Rectangles", arrange:"vertical"}, //arrange vertically
   {shape:"Rectangles", arrange:"horizontal"}, // arrange horizontally
-  {shape:"Rectangles", arrange:"toward"}, // move toward balloon
   {shape:"Pigs",direction:"down"}, //move down like normal
-  {shape:"Pigs",direction:"balloon"} // move toward the balloon
+  {shape:"Pigs",direction:"balloon"}, // move toward the balloon
+  {shape:"Stars",direction:"balloon"}
 ];
 
 
@@ -97,7 +100,7 @@ function draw() {
 function displayObstacle(){
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
-        makeGroupOfObstacles(3, "Rectangle");
+        makeGroupOfObstacles(7, "Stars");
       } 
       else {
         //random create "Squares" and "Dots"
@@ -137,12 +140,16 @@ function makePlayer() {
 
 //make the balloon
 function makeBalloon(){
-  balloon = createSprite(width / 2, height/2 + 200, 50);
+  balloon = new Sprite(width / 2, height/2 + 200, 50);
+  theString = new Sprite(250, 0, 10, 50, 'k');
+  theBall = new GlueJoint(balloon, theString);
+
   balloon.collider = 'static'
   balloon.color = "white"
+  theString.collider = 'static'
 
- 
 }
+
 
 
 ////////////////////////////////////////-----------------------------------------------/////////////////////////////////////////////
@@ -158,11 +165,22 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       obs.height = obs.width;
       if (typeOfSprites.rotate == "slow"){
         obs.rotationSpeed = 1;
+        obs.x = random(0, width);
+      }
+      else if (typeOfSprites.rotate == "fast"){
+        obs.rotationSpeed = 30;
+        obs.width = random(20, 80);
+        obs.height = obs.width;
+        obs.x = random(0, width);
       }
       else{
-        obs.rotationSpeed = 30;
+
+        obs.y = 0
+        obs.x = width
+        obs.rotate = 80;
+        obs.moveTowards(balloon, 0.01);
       }
-      obs.x = random(0, width);
+      
     }
     if (typeOfSprites.shape == "Dots") {
       obs.diameter = random(20, 80);
@@ -186,7 +204,7 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
         obs.y = 0-groupObs.length*30;
         obs.rotate = 0;
       }
-      else if (typeOfSprites.arrange == "horizontal"){
+      else {
         obs.height = random(100, 150);
         obs.width = 30;
         obs.x  = (groupObs.length-1)*(width/amount);
@@ -194,17 +212,7 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
         obs.rotateTowards(mouse, 0.05, 0);
         obs.speed = 0.05;
       }
-      else{
-        obs.height = 30;
-        obs.width = 100;
-        obs.y = 0
-        obs.x = width
-        obs.rotate = 80;
-        obs.moveTowards(balloon, 0.5);
-      }
     }
-
-
     if (typeOfSprites.shape == "Pigs") {
       obs.scale = random(0.3, 1.1);
       obs.y = random(0, -40);
@@ -220,7 +228,18 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
         obs.speed = 0.01;
       }
     }
+    if (typeOfSprites.shape == "Stars") {
+      obs.scale = 0.02;
+      obs.height = 30;
+      obs.img = "star.png";
+      if (typeOfSprites.direction == "balloon"){
+        obs.x = random(0, width);
+        obs.direction = "down";
+        obs.speed = 0.01;
+      }
     }
+
+  }
     obstacleArr.push(groupObs);
   }
   
