@@ -13,6 +13,7 @@ let bgMusic;
 let startGame = false;
 let gameLevel = 0;
 let startFrame
+let bestScore;
 
 
 
@@ -23,6 +24,7 @@ let arrTypeOfObstacles = [
   {shape:"Dots", arrange:"center"}, //appear centre of the screen
   {shape:"Rectangles", arrange:"vertical"}, //arrange vertically
   {shape:"Rectangles", arrange:"horizontal"}, // arrange horizontally
+  {shape:"Rectangles", arrange:"toward"}, // move toward balloon
   {shape:"Pigs",direction:"down"}, //move down like normal
   {shape:"Pigs",direction:"balloon"} // move toward the balloon
 ];
@@ -54,6 +56,7 @@ function setup() {
   makePlayer();
   
   
+  
  
   //show start dialogue
   let modalStartDialog = document.getElementById("start-dialog");
@@ -66,7 +69,13 @@ function setup() {
     startGame = true
   });
  
-  console.log(startGame)
+  //set up local storage for best score
+  bestScore = getItem("bestScore");
+
+  //if bestScore is null (first time playing), set it to 0
+  if (bestScore === null) {
+    bestScore = 0;
+  }
 }
 
 //draw 
@@ -79,6 +88,7 @@ function draw() {
   scrollingDownBackground();
   obstacleArr.forEach(scrollingObstacle); //update position of the obstacles
   obstacleArr.forEach(removeOffscreenObstacles);
+
 }
 
 
@@ -87,7 +97,7 @@ function draw() {
 function displayObstacle(){
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
-        makeGroupOfObstacles(random(5, 10), "Pigs");
+        makeGroupOfObstacles(3, "Rectangle");
       } 
       else {
         //random create "Squares" and "Dots"
@@ -104,7 +114,14 @@ function displayScore(){
   }
   if (frameCount < 20000) {
     gameLevel = Math.floor(1 + (frameCount - startFrame) / 100); //increase the gameLevel
-    para1.html("Score: " + gameLevel);
+    if (gameLevel > bestScore) {
+      bestScore = gameLevel;
+
+      //save best score to local storage
+      storeItem("bestScore", bestScore);
+    }
+
+    para1.html("Score: " + gameLevel + " | Best Score: " + bestScore);
     console.log(gameLevel)
   }
 }
@@ -169,13 +186,21 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
         obs.y = 0-groupObs.length*30;
         obs.rotate = 0;
       }
-      else{
+      else if (typeOfSprites.arrange == "horizontal"){
         obs.height = random(100, 150);
         obs.width = 30;
         obs.x  = (groupObs.length-1)*(width/amount);
         obs.y = 0;
         obs.rotateTowards(mouse, 0.05, 0);
         obs.speed = 0.05;
+      }
+      else{
+        obs.height = 30;
+        obs.width = 100;
+        obs.y = 0
+        obs.x = width
+        obs.rotate = 80;
+        obs.moveTowards(balloon, 0.5);
       }
     }
 
@@ -186,7 +211,7 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       obs.img = "pig.png";
       if (typeOfSprites.direction == "balloon"){
         obs.x  = (groupObs.length-1)*(width/amount);
-        obs.moveTowards(balloon, 0.3);
+        obs.moveTowards(balloon, 0.1);
         obs.speed = obs.scale;
       }
       else{
