@@ -1,3 +1,11 @@
+// Rise up game - major project
+
+// Extra for expert:
+// use a library called p5.play for physics and movements of the sprites
+//  used class objects with the p5.play Group() and Sprite()
+// use local storage from p5js to store the best score.
+
+
 
 //defining variables
 let theSky;
@@ -100,7 +108,7 @@ function draw() {
 function displayObstacle(){
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
-        makeGroupOfObstacles(7, "Stars");
+        makeGroupOfObstacles(7, "Pigs");
       } 
       else {
         //random create "Squares" and "Dots"
@@ -140,13 +148,12 @@ function makePlayer() {
 
 //make the balloon
 function makeBalloon(){
-  balloon = new Sprite(width / 2, height/2 + 200, 50);
-  theString = new Sprite(250, 0, 10, 50, 'k');
-  theBall = new GlueJoint(balloon, theString);
-
+  balloon = new Sprite(width / 2, height/2 + 200);
+  
   balloon.collider = 'static'
-  balloon.color = "white"
-  theString.collider = 'static'
+
+  balloon.image = "orangeballoon.png"
+  balloon.scale = 0.3
 
 }
 
@@ -161,20 +168,23 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
   while (groupObs.length < amount) {
     let obs = new groupObs.Sprite();
     if (typeOfSprites.shape == "Squares") {
-      obs.width = random(20, 80);
-      obs.height = obs.width;
       if (typeOfSprites.rotate == "slow"){
+        obs.width = random(20, 40);
+        obs.height = obs.width;
         obs.rotationSpeed = 1;
         obs.x = random(0, width);
       }
       else if (typeOfSprites.rotate == "fast"){
+        obs.width = random(20, 80);
+        obs.height = obs.width;
         obs.rotationSpeed = 30;
         obs.width = random(20, 80);
         obs.height = obs.width;
         obs.x = random(0, width);
       }
       else{
-
+        obs.width = 40;
+        obs.height = obs.width;
         obs.y = 0
         obs.x = width
         obs.rotate = 80;
@@ -233,6 +243,7 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       obs.height = 30;
       obs.img = "star.png";
       if (typeOfSprites.direction == "balloon"){
+        obs.y = random(0, -40);
         obs.x = random(0, width);
         obs.direction = "down";
         obs.speed = 0.01;
@@ -303,6 +314,7 @@ function checkCollision(obstacle) {
   if (obstacle.collides(balloon)) {
     startGame = false;
     balloon.img = "boom.png";
+    balloon.scale = 0.7
     console.log("over")
     //Show GameOver Dialog
     const modalGameOverDialog = document.getElementById("game-over-dialog");
