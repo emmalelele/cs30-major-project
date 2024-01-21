@@ -2,31 +2,38 @@
 
 // Extra for expert:
 // use a library called p5.play for physics and movements of the sprites
-//  used class objects with the p5.play Group() and Sprite()
+// used class objects with the p5.play Group() and Sprite()
 // use local storage from p5js to store the best score.
+// use js's location.reload() 
 
 
 
 //defining variables
+
+//background
 let theSky;
 let backgroundY1;
 let backgroundY2;
 let scrollSpeed = 4;
+
+
+// main sprites elements
 let mainBall;
-let obstacleArr = [];
-let lastGemTime = 0;
 let balloon;
 let imageScale = 0.5
 let bgMusic;
+let obstacleArr = [];
+let theBall;
+
+//score counting and game over variables
 let startGame = false;
 let gameLevel = 0;
 let startFrame
 let bestScore;
-let theString;
-let theBall
 
 
 
+// object notations for the obstacle (type of obstacle, behaviour)
 let arrTypeOfObstacles = [
   {shape:"Squares", rotate:"slow"},
   {shape:"Squares", rotate:"fast"}, //rotate fast
@@ -37,7 +44,7 @@ let arrTypeOfObstacles = [
   {shape:"Rectangles", arrange:"horizontal"}, // arrange horizontally
   {shape:"Pigs",direction:"down"}, //move down like normal
   {shape:"Pigs",direction:"balloon"}, // move toward the balloon
-  {shape:"Stars",direction:"balloon"}
+  {shape:"Stars",direction:"balloon"} // stars move toward balloon
 ];
 
 
@@ -49,7 +56,7 @@ function randomItemFromArray(array) {
 
 
 
-//loading images
+//loading images and sounds
 function preload(){
   theSky = loadImage("sky.jpg")
   bgMusic = loadSound("sound.mp3")
@@ -63,15 +70,14 @@ function setup() {
 	new Canvas(windowWidth, windowHeight);
   backgroundY1 = 0;
   backgroundY2 = height;
+
+  //making 2 main elements of the game
   makeBalloon();
   makePlayer();
   
-  
-  
- 
   //show start dialogue
   let modalStartDialog = document.getElementById("start-dialog");
-  modalStartDialog.style.display = "block";
+  modalStartDialog.style.display = "block"; 
 
   // start game
   document.getElementById("start-button").addEventListener("click", (e) => {
@@ -98,27 +104,27 @@ function draw() {
   }
   scrollingDownBackground();
   obstacleArr.forEach(scrollingObstacle); //update position of the obstacles
-  obstacleArr.forEach(removeOffscreenObstacles);
+  obstacleArr.forEach(removeOffscreenObstacles); //remove off screen obstacles
 
 }
 
 
 
-
+//function to display obstacles
 function displayObstacle(){
     if (frameCount % 299 == 0) {
       if (frameCount % 5 == 0) {
-        makeGroupOfObstacles(7, "Pigs");
+        makeGroupOfObstacles(7, "Pigs"); //make the pigs
       } 
       else {
-        //random create "Squares" and "Dots"
+        //randomly create other types of obstacle
         makeGroupOfObstacles(random(20,90), randomItemFromArray(arrTypeOfObstacles));
       }
     }
   
 }
 
-
+//displaying the scores
 function displayScore(){
   if (!startFrame){
     startFrame = frameCount;
@@ -132,8 +138,7 @@ function displayScore(){
       storeItem("bestScore", bestScore);
     }
 
-    para1.html("Score: " + gameLevel + " | Best Score: " + bestScore);
-    console.log(gameLevel)
+    para1.html("Score: " + gameLevel + " | Best Score: " + bestScore); //display the scores on the screen
   }
 }
 
@@ -148,9 +153,12 @@ function makePlayer() {
 
 //make the balloon
 function makeBalloon(){
+  theBall = new Sprite(width / 2, height/2 + 166, 45); //make this circle under the balloon image so that when the obstacles touch the head of the balloon game over
   balloon = new Sprite(width / 2, height/2 + 200);
   
+  
   balloon.collider = 'static'
+  theBall.collider = "static"
 
   balloon.image = "orangeballoon.png"
   balloon.scale = 0.3
@@ -161,13 +169,16 @@ function makeBalloon(){
 
 ////////////////////////////////////////-----------------------------------------------/////////////////////////////////////////////
 
-
+//function to make obstacles type and behaviour
 function makeGroupOfObstacles(amount, typeOfSprites) {
-  groupObs = new Group();
+  groupObs = new Group(); // build-in class objects Group()
   groupObs.y = 0;
   while (groupObs.length < amount) {
     let obs = new groupObs.Sprite();
+
+    //square obstacles
     if (typeOfSprites.shape == "Squares") {
+
       if (typeOfSprites.rotate == "slow"){
         obs.width = random(20, 40);
         obs.height = obs.width;
@@ -192,6 +203,8 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       }
       
     }
+
+    //dots obstacle
     if (typeOfSprites.shape == "Dots") {
       obs.diameter = random(20, 80);
       if (typeOfSprites.arrange == "random"){
@@ -206,6 +219,8 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
       }
       
     }
+
+    //rectangle obstacles
     if (typeOfSprites.shape == "Rectangles") {
       if (typeOfSprites.arrange == "vertical"){
         obs.width = random(100, 150);
@@ -223,13 +238,15 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
         obs.speed = 0.05;
       }
     }
+
+    //pigs obstacle
     if (typeOfSprites.shape == "Pigs") {
       obs.scale = random(0.3, 1.1);
       obs.y = random(0, -40);
       obs.img = "pig.png";
       if (typeOfSprites.direction == "balloon"){
         obs.x  = (groupObs.length-1)*(width/amount);
-        obs.moveTowards(balloon, 0.1);
+        obs.moveTowards(balloon, 0.3);
         obs.speed = obs.scale;
       }
       else{
@@ -238,6 +255,8 @@ function makeGroupOfObstacles(amount, typeOfSprites) {
         obs.speed = 0.01;
       }
     }
+
+    //star obstacles
     if (typeOfSprites.shape == "Stars") {
       obs.scale = 0.02;
       obs.height = 30;
@@ -311,20 +330,20 @@ function removeOffscreenObstacles(groupObs, index) {
 
 //check collide
 function checkCollision(obstacle) {
-  if (obstacle.collides(balloon)) {
+  if (obstacle.collides(theBall)) {
     startGame = false;
     balloon.img = "boom.png";
     balloon.scale = 0.7
-    console.log("over")
-    //Show GameOver Dialog
+
+    //show GameOver Dialog
     const modalGameOverDialog = document.getElementById("game-over-dialog");
     document.getElementById("game-level-display").textContent = gameLevel;
     modalGameOverDialog.style.display = "block";
-    //When Play again button click
+    //when Play again button click
     document
       .getElementById("play-again-button")
       .addEventListener("click", (e) => {
-        location.reload();
+        location.reload(); //js function to reload the window
       });
     return true;
   } 
