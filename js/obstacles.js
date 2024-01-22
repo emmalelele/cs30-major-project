@@ -1,5 +1,5 @@
 // object notations for the obstacle (type of obstacle, behaviour)
-let arrTypeOfObstacles = [
+arrTypeOfObstacles = [
     {shape:"Squares", rotate:"slow"},
     {shape:"Squares", rotate:"fast"}, //rotate fast
     {shape:"Squares", arrange:"toward"}, // move toward balloon

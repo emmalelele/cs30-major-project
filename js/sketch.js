@@ -25,8 +25,8 @@ let theBalloon;
 let imageScale = 0.5
 let bgMusic;
 let obstacleArr = [];
+let arrTypeOfObstacles;
 let theBall;
-
 
 //score counting and game over variables
 let startGame = false;
