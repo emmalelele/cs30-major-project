@@ -1,14 +1,16 @@
+// Emma Le
 // Rise up game - major project
 
 // Extra for expert:
 // use a library called p5.play for physics and movements of the sprites
 // used class objects with the p5.play Group() and Sprite()
-// use local storage from p5js to store the best score.
+// use local storage function from p5js to store the best score.
 // use js's location.reload() 
+// basically finished all the nice to have list
 
 
 
-//defining variables
+////////defining variables
 
 //background
 let theSky;
@@ -19,33 +21,18 @@ let scrollSpeed = 4;
 
 // main sprites elements
 let mainBall;
-let balloon;
+let theBalloon;
 let imageScale = 0.5
 let bgMusic;
 let obstacleArr = [];
 let theBall;
 
+
 //score counting and game over variables
 let startGame = false;
 let gameLevel = 0;
-let startFrame
+let startFrame;
 let bestScore;
-
-
-
-// object notations for the obstacle (type of obstacle, behaviour)
-let arrTypeOfObstacles = [
-  {shape:"Squares", rotate:"slow"},
-  {shape:"Squares", rotate:"fast"}, //rotate fast
-  {shape:"Squares", arrange:"toward"}, // move toward balloon
-  {shape:"Dots", arrange:"random"}, //appear random
-  {shape:"Dots", arrange:"center"}, //appear centre of the screen
-  {shape:"Rectangles", arrange:"vertical"}, //arrange vertically
-  {shape:"Rectangles", arrange:"horizontal"}, // arrange horizontally
-  {shape:"Pigs",direction:"down"}, //move down like normal
-  {shape:"Pigs",direction:"balloon"}, // move toward the balloon
-  {shape:"Stars",direction:"balloon"} // stars move toward balloon
-];
 
 
 
@@ -58,7 +45,7 @@ function randomItemFromArray(array) {
 
 //loading images and sounds
 function preload(){
-  theSky = loadImage("sky.jpg")
+  theSky = loadImage("asset/sky.jpg")
   bgMusic = loadSound("sound.mp3")
 
 }
@@ -154,128 +141,16 @@ function makePlayer() {
 //make the balloon
 function makeBalloon(){
   theBall = new Sprite(width / 2, height/2 + 166, 45); //make this circle under the balloon image so that when the obstacles touch the head of the balloon game over
-  balloon = new Sprite(width / 2, height/2 + 200);
+  theBalloon = new Sprite(width / 2, height/2 + 200);
   
   
-  balloon.collider = 'static'
+  theBalloon.collider = 'static' //stay still
   theBall.collider = "static"
 
-  balloon.image = "orangeballoon.png"
-  balloon.scale = 0.3
+  theBalloon.image = "asset/orangeballoon.png"
+  theBalloon.scale = 0.3
 
 }
-
-
-
-////////////////////////////////////////-----------------------------------------------/////////////////////////////////////////////
-
-//function to make obstacles type and behaviour
-function makeGroupOfObstacles(amount, typeOfSprites) {
-  groupObs = new Group(); // build-in class objects Group()
-  groupObs.y = 0;
-  while (groupObs.length < amount) {
-    let obs = new groupObs.Sprite();
-
-    //square obstacles
-    if (typeOfSprites.shape == "Squares") {
-
-      if (typeOfSprites.rotate == "slow"){
-        obs.width = random(20, 40);
-        obs.height = obs.width;
-        obs.rotationSpeed = 1;
-        obs.x = random(0, width);
-      }
-      else if (typeOfSprites.rotate == "fast"){
-        obs.width = random(20, 80);
-        obs.height = obs.width;
-        obs.rotationSpeed = 30;
-        obs.width = random(20, 80);
-        obs.height = obs.width;
-        obs.x = random(0, width);
-      }
-      else{
-        obs.width = 40;
-        obs.height = obs.width;
-        obs.y = 0
-        obs.x = width
-        obs.rotate = 80;
-        obs.moveTowards(balloon, 0.01);
-      }
-      
-    }
-
-    //dots obstacle
-    if (typeOfSprites.shape == "Dots") {
-      obs.diameter = random(20, 80);
-      if (typeOfSprites.arrange == "random"){
-        obs.x = random(0, width);
-        obs.direction = random(0, 180);
-        obs.speed = 3;
-      }
-      else{
-        obs.x = random(width/2-40,width/2+40);
-        obs.y = random(0, -40);
-        obs.rotationSpeed = 0;
-      }
-      
-    }
-
-    //rectangle obstacles
-    if (typeOfSprites.shape == "Rectangles") {
-      if (typeOfSprites.arrange == "vertical"){
-        obs.width = random(100, 150);
-        obs.height = 30;
-        obs.x = width/2;
-        obs.y = 0-groupObs.length*30;
-        obs.rotate = 0;
-      }
-      else {
-        obs.height = random(100, 150);
-        obs.width = 30;
-        obs.x  = (groupObs.length-1)*(width/amount);
-        obs.y = 0;
-        obs.rotateTowards(mouse, 0.05, 0);
-        obs.speed = 0.05;
-      }
-    }
-
-    //pigs obstacle
-    if (typeOfSprites.shape == "Pigs") {
-      obs.scale = random(0.3, 1.1);
-      obs.y = random(0, -40);
-      obs.img = "pig.png";
-      if (typeOfSprites.direction == "balloon"){
-        obs.x  = (groupObs.length-1)*(width/amount);
-        obs.moveTowards(balloon, 0.3);
-        obs.speed = obs.scale;
-      }
-      else{
-        obs.x = random(0, width);
-        obs.direction = "down";
-        obs.speed = 0.01;
-      }
-    }
-
-    //star obstacles
-    if (typeOfSprites.shape == "Stars") {
-      obs.scale = 0.02;
-      obs.height = 30;
-      obs.img = "star.png";
-      if (typeOfSprites.direction == "balloon"){
-        obs.y = random(0, -40);
-        obs.x = random(0, width);
-        obs.direction = "down";
-        obs.speed = 0.01;
-      }
-    }
-
-  }
-    obstacleArr.push(groupObs);
-  }
-  
-
-/////////////////////////////////////////////////////-------------------------------------//////////////////////////////////////////////////////////
-
 
 
 //Make the scrolling-down background
@@ -292,13 +167,14 @@ function scrollingDownBackground() {
   }
 }
 
-function scrollingObstacle(gemGroup) {
-  for (let i = 0; i < gemGroup.length; i++) {
-    gemGroup[i].position.y += scrollSpeed;
+// function to make the obstacle scroll with the background
+function scrollingObstacle(obsGroup) {
+  for (let i = 0; i < obsGroup.length; i++) {
+    obsGroup[i].position.y += scrollSpeed;
   }
 }
 
-// function to remove off screen obstacles
+// function to remove off screen obstacles, and check collision with balloon simultaneously
 function removeOffscreenObstacles(groupObs, index) {
   //delete elements from the obstacleArr
   if (groupObs.length == 0) {
@@ -309,7 +185,6 @@ function removeOffscreenObstacles(groupObs, index) {
     for (let i = groupObs.length - 1; i >= 0; i--) { //check collision with balloon
       
       if (checkCollision(groupObs[i])) {
-        //Check collision with the balloons
         break;
 
       }
@@ -320,8 +195,8 @@ function removeOffscreenObstacles(groupObs, index) {
         groupObs[i].position.y - groupObs[i].height / 2 > height)
 
       {
-        // console.log("Removing obstacle at index:", i);
-        groupObs[i].remove();
+
+        groupObs[i].remove(); //remove the offscreen obstacle
       }
     }
   }
@@ -332,8 +207,8 @@ function removeOffscreenObstacles(groupObs, index) {
 function checkCollision(obstacle) {
   if (obstacle.collides(theBall)) {
     startGame = false;
-    balloon.img = "boom.png";
-    balloon.scale = 0.7
+    theBalloon.img = "asset/boom.png"; //change the balloon image to boom image
+    theBalloon.scale = 0.7
 
     //show GameOver Dialog
     const modalGameOverDialog = document.getElementById("game-over-dialog");
